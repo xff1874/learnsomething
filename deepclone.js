@@ -37,17 +37,14 @@ function deep3(obj) {
 var a1 = function () {
     console.log("hello a1")
 }
-var b1 = deep(a1);
+var b1 = deepclone(a1);
 console.log(b1);
 
 var a2 = ["1", "2"]
-var b2 = clone2(a2);
+var b2 = deep2(a2);
 console.log(b2)
 
 
 var a3 = { name: "a3", address: { isLocal: true } }
 var b3 = deep3(a3);
 console.log(b3)
-
-var b4 = deep3(a4);
-console.log(b4);
