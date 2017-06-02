@@ -50,3 +50,7 @@ var b3 = deep3(a3);
 console.log(b3)
 
 console.log("sdfsdfd")
+
+module.exports = {
+    deep2: deep2
+}
