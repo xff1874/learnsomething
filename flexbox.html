@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .flexbox {
+            display: flex;
+            flex-direction: column;
+            border: 1px solid pink;
+            height: 500px;
+
+
+            /*extra space 权重比align-items 。多个居中 align-items "center" align-content:"center"*/
+        }
+        /*flex-basic 0 auto width flex-grow*/
+
+        .item {
+            outline: 1px;
+            outline-color: darkblue;
+            outline-style: dashed;
+            background: tomato;
+            height: 100px;
+
+
+            /*no width content width,else basis size and company with flex-grow to calculate the avaible space*/
+        }
+
+        .item2 {
+            flex-grow: 1
+            /*calculate the avaiable space and divdide*/
+        }
+    </style>
+</head>
+
+<body>
+    <div class="flexbox">
+        <p class="item item1">1</p>
+        <p class="item item1">2</p>
+        <p class="item item1">3</p>
+        <p class="item item1">4</p>
+        <p class="item item1">5</p>
+
+
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>渲染table测试</title>
+    <style type="text/css">
+        * {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        .container {
+            width: 1000px;
+            margin: 0px auto;
+            font-size: 14px;
+            text-align: center;
+            color: #000;
+        }
+
+        table {
+            border-spacing: 0px;
+            width: 100%;
+            line-height: 1.5em;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="box" class="container"></div>
+    <script type="text/javascript">
+        window.onload = function () {
+            var boxDom = document.getElementById('box');
+            var cTable = document.createElement('table');
+            var index = 0;//单元格索引，从0开始
+            var oneStepNum = 200;
+            var currentStep = 1;
+            var renderTable = function () {
+                for (var i = 0; i < oneStepNum; i++) {
+                    var tr = document.createElement("tr")
+                    for (var j = 0; j < 6; j++) {
+                        var td = document.createElement("td");
+                        td.innerHTML = index;
+                        tr.appendChild(td);
+                        index++;
+                    }
+                    cTable.append(tr);
+                }
+
+                boxDom.appendChild(cTable);
+                currentStep++;
+                if (currentStep > 100) {
+                    clearTimeout(timer);
+                    return;
+                }
+                var timer = setTimeout(renderTable, 0)
+            }
+            renderTable();
+
+        };
+    </script>
+</body>
+
+</html>
