@@ -300,4 +300,173 @@ function f(){
 }
 f();
 
+对于Object来说，key有没有""区别不大，直到：
+1. 数字key
+2. 特殊字符
+3. 保留关键字。
 
+对于对象属性值的访问，1.dot 2.[]// 后者可以是个变量或者表达式
+var key="name"
+obj[key]
+
+//构造函数，类的作用，this,首字符大写。如果不 new.只是作为普通的函数调用，就不会产生新对象。
+
+function Hero(name){
+    this.name= name;
+    this.occupation = "Nijia";
+    this.whoAreYou = function(){
+        return "I'm "+ this.name + this.occupation ;
+    }
+}
+
+var h1 = new Hero("Batman")
+var h2 = new Hero("Superman")
+h1.whoAreYou();
+h2.whoAreYou();
+
+
+var h3 = Hero("Leno")
+// constructor 关键字，对象的构造函数,可以赋值。可以在不知道构造函数的时候动态调用构造函数
+var h4= new h1.constructor("Thor")
+h4.whoAreYou();
+
+//有了构造函数，才有了instanceOf，来判断对象是由哪个构造函数创建的。
+function factory(name){
+    return {
+        name:name
+    }
+}
+
+var b1= factory("Jane")
+b1.constructor //Object() { [native code] }
+
+//构造函数，如果return {},则会返回对象，constructor也会变成Object.
+```js
+function Factory(name){
+    this.name = name;
+    return {
+        age:12
+    }
+}
+
+var b1 = new Factory("Tim"); //Object() { [native code] }
+b1.name;
+b1.age;
+b1.constructor
+```
+
+//传值
+对象的传值，只是引用的变动。因此如果重新赋值会影响原来的值。
+
+```js
+
+var o1={
+    age:12
+}
+
+var o2 = o1;
+o2.age=15;
+console.log(o1.age) //15
+
+function changeAge(obj){
+    obj.age= 8;
+}
+
+changeAge(o1)
+o1.age //8
+```
+
+//ES6 字面量。如果key和value相同，可以简写，method可以忽略function
+```js
+let name = 1;
+let my ={
+    name,
+    getName(){
+        return this.name
+    }
+};
+
+my.getName()
+```
+ES6的key，可以计算。这个ES5也可以啊,用[]
+function car(){
+    return "car"
+}
+let my2={
+    [car()]:"Jeep"
+};
+my2.car
+上面是property.下面是method
+let getCar=()=>"car"
+
+let my3={
+    [getCar()](){
+        return "BMW"
+    }
+}
+my3.car();
+
+//对象属性的特征。Object property attribute
+1. 是否可以枚举.for in.
+2. 是否可以管理,delete
+如何判断
+```js
+Object.getOwnPropertyDescritpor();
+let obj = {
+    name:"12"
+}
+console.log(Object.getOwnPropertyDescriptor(obj,"name"))
+//{value: "12", writable: true, enumerable: true, configurable: true}
+//可以用Object.defineProperty(obj,property,value)
+Object.defineProperty(obj,"name",{configurable:false})
+//用这个函数可以改变property的值
+```
+
+Object.assign(traget,source1,source2)
+只会拷贝enumerable的值。
+```js
+let a = {name:"hello"}
+Object.defineProperty(obj,"age",{enumerable:false,value:"34"})
+
+var b = Object.assign({},a)
+console.log(b)//{name: "hello"}
+```
+
+//destructuring
+```js
+let person = {
+    name:"Herry",
+    age:32
+}
+let {name:nickname} =person;
+console.log(nickname)
+```
+```js
+let config = {
+    server:"localhost",
+    port :"8080"
+}
+let server = "127.0.0.1"
+let port = "80";
+({server,port} = config)
+console.log(server,port)
+```
+同样适用于数组
+```js
+const arr = ["a","b"]
+const [x,y] =arr;//这里是2个变量,注意这里不是{}，而是[]
+console.log(x,y,z)
+```
+swap
+```js
+let a = 1,b=2;
+[a,b]=[b,a]
+console.log(a)
+```
+结合rest operator?
+let [t,...y] = ["a","b","c"];
+console.log(y)
+
+Object.toString 返回字符串代表某种类型
+"[object Object]"
+"[object Date]"
