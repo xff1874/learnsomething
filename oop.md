@@ -1,4 +1,7 @@
 ### Object-oriented Javascript
+
+### Q
+
 ### Chapter1
 三驾马车
 1. HTML for content
@@ -470,3 +473,385 @@ console.log(y)
 Object.toString 返回字符串代表某种类型
 "[object Object]"
 "[object Date]"
+
+//Array
+var a =new Array(1,2,3,4);
+如果a.length = 10;大于目前的数组，则会用undefined填充
+slice vs splice.
+slice 不影响原来的数组
+splice 修改原来的数组。
+```js
+var a= [1,3,5];
+var b = a.slice(0,2);
+console.log(b) //[1,3]
+console.log(a) //[1,3,5]
+
+var c = a.splice(0,1,7)
+console.log(a) //[7,3,5]
+```
+Array.keys,Array.values,Array.entries.
+
+```js
+let arr=["a","b","c"];
+for(const key of arr.keys()){
+    console.log(key)
+}
+
+//报错
+for(const val of arr.values()){
+    console.log(val)
+}
+
+for(const [index,val] of arr.entries){
+    console.log(index,val)
+}
+```
+
+property的作用
+1. property指向一个对象
+2. 只有function为构造函数才起作用
+3. 所有被function constructor创建的对象有link对象。
+
+```js
+
+var ninjia={
+    name:"ninja",
+    getName:function(){
+        return this.name;
+    }
+}
+
+var F=function(){};
+F.prototype = ninjia;
+
+var f = new F();
+f.getName();
+```
+
+function的toString()返回整个定义。
+var f = function(){
+    console.log("wending")
+}
+console.log(f.toString())
+
+call vs array.
+call和array因为可以指定this,所以可以指定重用method.
+```js
+var ninjia={
+    name:"ninjia",
+    throw(...rest){
+        return "I'm "+this.name+rest;
+    }
+}
+
+var farmer= {
+    name:"farmer"
+}
+
+ninjia.throw.call(farmer,1,2,3,4)
+```
+
+this 问题
+```js
+var greeter = {
+    default:"Hello",
+    greet:function(names){
+        names.forEach(function(name){
+            console.log(this.default+name)
+        })
+    }
+}
+
+greeter.greet(["World","King"])
+```
+This.
+当一个函数调用this的时候，如果一个函数是一个object的method.那么则this,指向这个object.如果是一个不是，则指向全局，比如上面。arrow function 可破
+箭头函数没有this,this is inherited from this enclosing scope.
+```js
+
+var greeter={
+    default:"Hello",
+    greet:function(names){
+        names.forEach(name=>console.log(this.default+name))
+    }
+}
+
+greeter.greet(["China","World"]);
+```
+
+__ThisOfArrowFunctio__ 
+Arrow Function是lexical scope。即静态返回，inner function 可以访问outer function.在编译时期觉得，所以arrow function 的this指定正确。而传统的function this指定是动态的，运行时才判断。
+
+Regex.
+
+```js
+function RegExpMultilineDemo(flag){
+    // The flag paramter is a string that contains
+    //g,i or m. The flags can be combined;
+
+    // Check flags for validity.
+    if(flag.match(/[^gim]/)){
+        return ("Flag specified is not valid")
+    }//Create the string on which to perform the replacement.
+
+    var ss = "The man hit the ball with the bat";
+    ss+= "\nwhile the fielder caught the ball with the glove."
+
+    //Replace "while" with "and"
+    var re= new RegExp("^while",flag);
+    var r = ss.replace(re,"and")
+
+    var s ="";
+    s+="Result for multiline=" + re.multiline.toString();
+    s +=": "+r;
+    return s;
+}
+
+var sa = RegExpMultilineDemo("m");
+var sb = RegExpMultilineDemo("");
+``
+multiline从名字上可以看出是包括换行符，多行.\n\r,而不是直接搜索。
+
+test vs exec
+test 只返回true 或者false
+exec 返回结果。
+
+match vs search vs replace vs split
+match 返回所有的结果
+search 返回第一个匹配的位置
+
+错误处理
+```js
+try{}
+catch(e){}
+finally{}
+```
+
+```
+function F(){
+    function C(){
+        return this;
+    }
+    return C();
+}
+var o = new F();
+```
+
+```
+function C(){
+    this.a = 1;
+    return false;
+}
+console.log(typoef new C())
+```
+
+for...of vs for...in 没看出优势？
+
+Iterators
+```js
+function iter(array){
+    var nextId = 0;
+    return {
+        next:function(){
+            if(nextId < array.length){
+                return {value:array[nextId++],done:false}
+            }else{
+                return {done:true}
+            }
+        }
+    }
+}
+let it = iter(["Hello","World"])
+it.next().value
+it.next().value
+it.next().done
+```
+
+ES6 实现iterable接口
+1.实现Symbol.iteraotr接口
+2.返回next 函数。
+```js
+let iter={
+    0:"Hello",
+    1:"World of",
+    2:"JS",
+    length:3,
+    [Symbol.iterator](){
+        let index = 0;
+        return {
+            next:()=>{
+                        let value = this[index];
+                        let done = index >= this.length;
+                        index++;
+                        return {value,done}
+                }
+        }
+    }
+}
+
+for(let i of iter){
+    console.log(i)
+}
+
+```
+
+Generators 生成器。
+```js
+ function *generatorFunc(){
+ console.log("1");
+ yield;
+ console.log("2")
+ }
+ var gen = generatorFunc();
+ gen.next();
+ ```
+生成器 
+1：*号。2，yield关键字。
+
+1：generator 函数，调用之后不像普通的函数，而是返回一个generator对象。
+2. generator对象调用next函数。结果为一个{value,done:false}对象。碰到yield暂停。
+再次调用generatorObj.next(),结束的时候{done:true,value:xxx}
+
+```js
+
+function * logger(){
+    console.log("start")
+    console.log(yield);
+    console.log(yield)
+    console.log(yield)
+    return ("end");
+}
+
+var log = logger();
+log.next();
+
+```
+
+generator 也是iterator.
+
+```js
+
+function * logger(){
+    yield 'a';
+    yield "b";
+}
+
+var  log = logger();
+log.next();
+log.next();
+
+```
+
+抄一遍
+```js
+function * logger(){
+    yield 'a';
+    yield 'b'
+}
+
+for(const i of logger()){
+    console.log(i)
+}
+const arr = [...logger()];
+console.log(arr)
+
+const [x,y] = logger();
+console.log(x,y)
+```
+
+ES6集合 Collections
+
+### Map
+```js
+const m = new Map();
+m.set("first",1);
+m.get("first")
+```
+标准的set/get。而不像以前用object，有什么用？
+可以判断,删除，大小,清除等参数。
+
+```js
+const m = new Map();
+m.set("first",1);
+m.get("first")
+m.has("first")
+m.delete("first");
+m.has("first")
+m.size;
+m.clear();
+```
+创建二维数组。
+```js
+const m2 = new Map([
+    [1,"one"],
+    [2,"two"],
+    [3,"three"]
+])
+
+const m3 = new Map().set(1,"one").set(2,"two").set(3,"three");
+```
+Map iterator
+
+```js
+const m = new Map([
+    [1,"one"],
+    [2,"two"],
+    [3,"three"]
+])
+
+for(const k of m.keys()){
+    console.log(k)
+}
+
+for(const v of m.values()){
+    console.log(v)
+}
+
+for(const entry of m.entries()){
+    console.log(entry)
+}
+for(const [k,v] of m.entries()){
+    console.log(k,v)
+}
+// map转为数组
+const keys = [...m.keys()];
+console.log(keys)
+
+const arr = [...m];
+console.log(arr)
+```
+
+Set
+类似Map，只能拥有一个唯一的value
+```js
+const s = new Set();
+s.add("first");
+s.has("first");
+s.delete("first");
+s.has("first")
+```
+WeakMap.WeakSet vs Map,Set
+1. 支持的操作的api有限
+2. 对key和value的数据类型有限制。
+3. 无法iterator
+
+WeakMap vs Map
+WeakMap的key必须是obj。
+WeakMap对key只是引用，当删除后，垃圾回收立马执行。
+
+```js
+var k1 = {a:1};
+var k2= {b:2};
+var map = new Map();
+var wm = new WeakMap();
+map.set(k1,"k1");
+wm.set(k2,"k2");
+k1 = null;
+map.forEach((k1,val)=>{
+    console.log(k1,val)
+})
+k2=null;
+wm.get(k2)
+```
+
+
