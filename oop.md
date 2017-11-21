@@ -853,5 +853,193 @@ map.forEach((k1,val)=>{
 k2=null;
 wm.get(k2)
 ```
+### prototype
+
+每个函数都有prototype,默认是个有construcor 指向自己的对象。
+```js
+function foo(a,b){
+    return a * b;
+}
+
+typeof foo.prototype == "object"
+
+可以赋值
+foo.prototype = {};
+```
+
+```js
+function Gadget(name,color){
+    this.name = name;
+    this.color = color;
+    // this.whatAreYou = function(){
+    //     return "I am a " + this.color + " " + this.name;
+    // }
+}
+
+var g1 = new Gadget("g1","red")
+var g2 = new Gadget("g2","black")
+
+
+Gadget.prototype.whatAreYou = function(){
+        return "I am a " + this.color + " " + this.name;
+    }
+Gadget.prototype.color="blue" ;
+Gadget.prototype.name="gadget" ;
+Gadget.prototype.price = 100;
+Gadget.prototype.rating = 3;
+Gadget.prototype.getInfo = function(){
+    return "Rating: " + this.rating + ", price: "+ this.price;
+};
+//这种方式，少了constructor
+// Gadget.prototype = {
+//     price:100,
+//     rating:3
+//     constructor:Gadget
+// }
+g1.whatAreYou();
+g2.whatAreYou();
+```
+所有new的对象都可以访问函数prototype上的值
+var g3 = new Gadget("g3","yellow");
+g3.name;
+g3.price;
+g3.getInfo();
+
+对prototoye是引用，所以即使是对象在之前创建，任然可以用新的方法。
+
+```js
+function Gadget(name,color){
+    this.name = name;
+    this.color = color;
+    // this.whatAreYou = function(){
+    //     return "I am a " + this.color + " " + this.name;
+    // }
+}
+
+
+
+
+Gadget.prototype.whatAreYou = function(){
+        return "I am a " + this.color + " " + this.name;
+    }
+var g1 = new Gadget("g1","red")
+
+
+Gadget.prototype.price = 100;
+Gadget.prototype.rating = 3;
+Gadget.prototype.getInfo = function(){
+    return "Rating: " + this.rating + ", price: "+ this.price;
+};
+
+var g2 = new Gadget("g2","black");
+g1.getInfo();
+g1.price;
+g2.getInfo();
+
+console.log(g2.constructor.prototype.rating) 
+//每个对象都有一个construcotr指向当前的构造函数，prototoype函数的prototype对象，也有constructor属性。
+
+```
+//owner property vs prototype property
+```js
+function Gadget(name){
+    this.name = name;
+}
+
+Gadget.prototype.name = "mirror"
+
+var  g1 = new Gadget("Hello")
+g1.name;
+delete g1.name;
+g1.name;
+g1.hasOwnProperty("name") //对象维度是否有这个属性
+g1.toString()
+g1.hasOwnProperty('toString')
+g1.constructor.prototype.hasOwnProperty("toString")
+Object.hasOwnProperty('toString')
+Object.prototype.hasOwnProperty('toString')
+```
+
+```js
+var params = {
+    productid:666,
+    section:"products"
+}
+
+var url = "http://example.org/page.php?",i,query=[];
+
+for(i in params){
+    query.push(i+ '=' + params[i])
+}
+
+url += query.join("&");
+```
+1. for ...in 数组长度和constructor属性没有出现。
+2. 可枚举的可以用propertyIsEnumerable()来判断。
+3. hasOwnProperty来判断对象自己的属性。
+
+```js
+function Gadget(name,color){
+    this.name = name;
+    this.color = color;
+    this.getName = function(){
+        return this.name;
+    }
+}
+
+Gadget.prototype.price = 100;
+Gadget.prototype.rating = 3;
+
+var newtoy = new Gadget("webcam","black");
+
+for(var prop in newtoy){
+    console.log(prop + '=' + newtoy[prop])
+}//输出了所有的，包括prototype的对象
+
+newtoy.hasOwnProperty("name");//true;
+newtoy.hasOwnProperty("price") //false
+
+for(var prop in newtoy){
+    if(newtoy.hasOwnProperty(prop)){
+        console.log(prop+'='+ newtoy[prop])
+    }
+}
+//然后用propertyIsEnumerable来判断，属性是否属于自己可枚举的
+newtoy.propertyIsEnumerable("name");
+newtoy.propertyIsEnumerable("price")
+newtoy.constructor.prototype.propertyIsEnumerable("price")
+```
+判断对象的Prototype.isPrototypeOf
+
+```js
+var monkey = {
+    hair:true,
+    feeds:"bananas",
+    breathes:"air"
+}
+function Human(name){
+    this.name = name;
+}
+Human.prototype = monkey
+
+var goose = new Human("goose")
+
+monkey.isPropertyOf(goose)//判断某个对象是否是另外一个对象的原型
+Object.getPrototypeOf(goose)//根据某个对象获取它的原型对象
+ES5里面通过__proto__来判断。
+var developer = new Human ("developer");
+console.log(developer.__proto__)
+console.log(developer.__proto__ == monkey)
+
+typeof developer.__proto__
+typeof developer.prototype;
+typeof developer.constructor.prototype;
+```
+
+__proto__ vs prototype
+__proto是对象的属性
+prototype是构造函数的属性。
+
+
 
 
