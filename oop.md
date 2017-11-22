@@ -1040,6 +1040,69 @@ __proto__ vs prototype
 __proto是对象的属性
 prototype是构造函数的属性。
 
+扩展
+```js
+Array.prototype.inArray = function(needle){
+    for(var i=0,len = this.length;i<len;i++){
+        if(this[i] == needle)
+        return true;
+    }
+    return false;
+}
+var colors = ["red","blue","purple"];
+colors.inArray("red")
+colors.inArray("yellow")
+```
+```js
+String.prototype.reverse=function(){
+    return Array.prototype.reverse.apply(this.split("")).join("")
+}
+"blue".reverse();
+```
+```js
+ if(typeof String.prototype.trim != "function"){
+     String.prototype.trim = function(){
+         return this.replace(/^\s+|\s+$/g,'')
+     }
+ }
+ " hello ".trim();
+```
+
+Prototype problem
+1. 原型链是动态的
+2. constructor不可靠
+
+```js
+function Dog(){
+    this.tail = true;
+}
+
+var benji = new Dog();
+var rusty = new Dog();
+
+benji.__proto__
+Object.getPrototypeOf(rusty)
+
+Dog.prototype.say = function(){
+    return "wolf"
+}
+
+benji.say();
+rusty.say();
+//overwrite prototype
+Dog.prototype = {
+    paws:4,
+    hair:true
+}
+tyoepf benji.paws;
+// 这里是undefine 即使prototype 已经变了，但是benji还是指向之前的prototype
+//constructor 也变了。
+benji.__proto__
+Object.getPropertyOf(benji) 都一样还是指向创建时候的那个Prototype对象
+
+var lucy = new Dog();
+lucy.paws //4;
+```
 
 
 
