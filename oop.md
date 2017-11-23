@@ -1104,5 +1104,193 @@ var lucy = new Dog();
 lucy.paws //4;
 ```
 
+```js
+function Person(name){
+    this.name=name;
+}
 
+Person.prototype.getName=function(){
+    return this.name;
+}
+
+function China(name,area){
+    this.area = area;
+    Person.call(this,name)
+}
+// let p = new Person("p");
+China.prototype = new Person();
+China.prototype.constructor = China;
+
+var zhejiang = new China("zwd","zhejiang");
+console.log(zhejiang.getName());
+```
+
+```js
+function Shape(){
+    this.name = "Shape";
+    this.toString= function(){
+        return this.name;
+    }
+}
+
+function TwoDShape(){
+    this.name = '2D shape';
+}
+
+function Triangle(side,height){
+    this.name = "Triangle";
+    this.side = side;
+    this.height = height;
+    this.getArea = function(){
+        return this.side * this.height /2;
+    }
+}
+
+TwoDShape.prototype = new Shape();
+Triangle.prototype = new TwoDShape();
+TwoDShape.prototype.constructor = TwoDShape;
+Triangle.prototype.constructor = Triangle;
+
+var my = new Triangle(5,10);
+my.getArea();
+
+console.assert(my.constructor === Triangle,"my.constructor !== Triangle")
+console.assert(my instanceof Triangle,"my is not Triangle")
+console.assert(my instanceof TwoDShape,"my is not TwoDShape")
+console.assert(my instanceof Shape,"my is not Shape")
+console.assert(my instanceof Array,"my is not Array")
+
+//isPrototypeOf
+console.assert(Shape.prototype.isPrototypeOf(my),"Shape.prototype.is not PrototypeOf my")
+console.assert(TwoDShape.prototype.isPrototypeOf(my),"TwoDShape.prototype.is not PrototypeOf my")
+console.assert(Triangle.prototype.isPrototypeOf(my),"Triangle.prototype.is not PrototypeOf my")
+console.assert(String.prototype.isPrototypeOf(my),"String.prototype.is not PrototypeOf my")
+
+```
+//属性不变和方法的移到prototype
+```js
+function Shape(){
+    this.name = "Shape";
+}
+Shape.prototype.name  = "Shape"
+Shape.prototype.toString = function(){
+    return this.name;
+}
+```
+//只继承prototype
+```js
+function Shape(){}
+Shape.prototype.name = "Shape";
+Shape.prototype.toString = function(){
+    return this.name;
+};
+
+function TwoDShape(){};
+TwoDShape.prototype = Shape.prototype;
+TwoDShape.prototype.constructor = TwoDShape;
+TwoDShape.prototype.name = "2D shape";
+
+function Triangle(side,height){
+    this.side = side;
+    this.height = height;
+}
+
+Triangle.prototype = TwoDShape.prototype;
+Triangle.prototype.constructor = Triangle;
+Triangle.prototype.name = "Triangle";
+Triangle.prototype.getArea=function(){
+    return this.side * this.height/2;
+}
+
+var my = new Triangle(5,10);
+my.getArea();
+my.toString()
+```
+//副作用，指向同一个对象
+```js
+var s = new Shape();
+s.toString(); //triangle
+```
+一个临时的构造函数
+```js
+
+function Shape(){}
+Shape.prototype.name = "Shape";
+Shape.prototype.toString = function(){
+    return this.name;
+};
+
+function TwoDShape(){};
+
+
+function Triangle(side,height){
+    this.side = side;
+    this.height = height;
+}
+
+
+function f2(){};
+f2.prototype = Shape.prototype;
+var f22 = new f2();
+TwoDShape.prototype = f22;
+
+TwoDShape.prototype.constructor = TwoDShape;
+TwoDShape.prototype.name = "2D shape";
+
+function f1(){};
+f1.prototype = TwoDShape.prototype;//注意顺序，new 一个对象会__proto__指向之前的对象
+var f11 =  new f1();
+Triangle.prototype = f11;
+Triangle.prototype.constructor = Triangle;
+Triangle.prototype.name = "Triangle";
+Triangle.prototype.getArea=function(){
+    return this.side * this.height/2;
+}
+
+var t1 = new Triangle(4,2)
+t1.toString();
+
+```
+#### A temporary constructor -- new F();
+1.F()的prototype 指向constructor的prototype
+2. new F() 没有任何属性
+```js
+function Shape(){}
+Shape.prototype.name = "Shape";
+Shape.prototype.toString = function(){
+    return this.name;
+}
+
+function TwoDShape(){}
+var F= function(){};
+F.prototype = Shape.prototype;
+TwoDShape.prototype = new F();
+TwoDShape.prototype.constructor = TwoDShape;
+TwoDShape.prototype.name = "2D shape";
+
+function Triangle(side,height){
+    this.side = side;
+    this.height = height;
+}
+
+var F = function(){};
+F.prototype = TwoDShape.prototype;
+Triangle.prototype = new F();
+Triangle.prototype.constructor = Triangle;
+Triangle.prototype.name = "Triangle";
+Triangle.prototype.getArea=function(){
+    return this.side * this.height/2;
+}
+
+var my = new Triangle(5,10);
+my.getArea();
+my.toString();
+
+console.assert(my.__proto__ === Triangle.prototype,"wrong")
+console.assert(my.__proto__.__proto__ === TwoDShape.prototype,"wrong")
+console.assert(my.__proto__.__proto__.__proto__.constructor === Shape,"wrong")
+
+var s = new Shape();
+s.name;
+```
 
