@@ -1294,3 +1294,183 @@ var s = new Shape();
 s.name;
 ```
 
+uber,类似super,指向某个parent。这里是直接写死，如何实现一个super？
+```js
+function extend(Child,Parent){
+    var F = function(){}
+    F.prototype = Parent.prototype;
+    Child.prototype = new F();
+    Child.prototype.constructor = Child;
+    Child.uber = Parent.prototype;
+}
+
+function Shape(){}
+Shape.prototype.name = "Shape";
+Shape.prototype.toString=function(){
+    return this.constructor.uber?this.constructor.uber.toString() + " "+this.name:this.name;
+};
+
+function TwoDShape(){}
+extend(TwoDShape,Shape)
+TwoDShape.prototype.name = "TwoDShape";
+
+function Triangle(side,height){
+    this.side  = side;
+    this.height = height;
+} 
+extend(Triangle,TwoDShape);
+Triangle.prototype.name = "Triangle";
+Triangle.prototype.getArea=function(){
+    return this.side * this.height/2;
+}
+
+new Triangle().toString();
+```
+```js
+//更为简洁的版本，直接复制，避免了指向问题。只是这种方法只能继承方法，而不是类。但是
+// c instanceOf 通不过。副作用 指向同个对象，Child.prototype指向变化会导致Parent.prototype变化。
+//引用拷贝是对于基本的数据类似是复制，对于对象，指向同个对象，会有问题
+
+function A(){};
+function B(){};
+B.prototype.name = "B"
+function extends2(Child,Parent){
+    var p = Parent.prototype;
+    var c = Child.prototype;
+    for(var i in p){
+        c[i]=p[i]
+    }
+    c.uber = p;
+}
+extends2(A,B)
+A.prototype.name;
+```
+
+对象继承另外一个对象
+```js
+function extendCopy(p){
+    var c= {};
+    for(var i in p){
+        c[i]=p[i]
+    }
+    c.uber=p
+    return c;
+}
+//问题对象类型只是引用
+var shape = {
+    name:"Shape",
+    toString:function(){
+        return this.name;
+    }
+}
+var twoDee = extendCopy(shape);
+twoDee.name = "2D shape";
+twoDee.toString = function(){
+    return this.uber.toString()+ " " + this.name;
+}
+
+var triangle = extendCopy(twoDee);
+triangle.name = "Triangle";
+triangle.getArea= function(){
+    return this.side * this.height/2;
+}
+triangle.toString();
+
+function deepCopy(p,c){
+    var c = c||{};
+    for(var i in p ){
+        if(typeof p[i] === "object"){
+           c [i] == Array.isArray(p[i])?[]:{}
+           deepCopy(p[i],c[i]);
+        }else{
+            c[i]=p[i];
+        }
+    }
+    return c;
+}
+
+var parent = {
+    numbers:[1,2,3],
+    obj:{
+        props:1
+    },
+    bool:true
+}
+
+var mydeep = deepCopy(parent);
+mydeep.numbers.push(4,5,6);
+mydeep.obj.props
+parent.numbers
+```
+
+```js
+function deepCopy(p,c){
+    var c = c||{};
+    for(var i in p ){
+        if(p.hasOwnProperty(i)){ //只拷贝对象本身的属性
+            if(typeof p[i] === "object"){
+                c [i] = Array.isArray(p[i])?[]:{}
+                deepCopy(p[i],c[i]);
+             }else{
+                 c[i]=p[i];
+             }
+        }
+       
+    }
+    return c;
+}
+
+
+
+var parent = {
+    numbers:[1,2,3],
+    obj:{
+        props:1
+    },
+    getNumber:function(){
+        return this.numbers;
+    },
+    bool:true
+}
+
+parent.getNumber.prototype.name="parent";
+var mydeep = deepCopy(parent);
+console.log(mydeep.numbers.push(4,5,6));
+console.log(mydeep)
+mydeep.getNumber.prototype.name="mydeep";
+mydeep.getNumber=function(){
+    return "2"
+};
+console.log(parent.getNumber.prototype.name)
+
+1.hasOwnProperty 去掉杂志，只拷贝对象本身
+2.Object.prototype.toString.call(candidate) == "[object Array]"
+3.虽然指向同一个函数，但是基本无影响，因为是公用的。不会改变内部。但是会改变函数的属性。
+
+var a = function(){
+    alert("a")
+}
+a.prototype.name ="A";
+var b = a;
+b=function(){
+    alert("b")
+}
+
+a();
+
+
+```
+
+```js 继承某个对象
+
+ function eObject(o){
+     function F(){};
+     F.prototype = o;
+     return new F();
+ }
+
+
+```
+
+1. 继承Object,function有什么区别。
+2. 深度拷贝和继承Object有什么区别。
