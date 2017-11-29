@@ -1554,4 +1554,37 @@ triangle.toString();
    1.deepclone.
    2.prototype inheritance
    3.extend and augment 这个最好，即利用2，又可以添加自己的相关属性。
-3.muti inheritance。多重继承。                
+3.muti inheritance。多重继承。      
+
+#### Chapter8 ES6 Classes
+```js
+ class Logger{
+     static log(level,message){
+         console.log(`${level}:${message}`)
+     }
+ }
+
+ Logger.log("ERROR","The end is near")
+
+ const logger = new Logger("ERROR");
+ logger.log("The end is near");
+
+```     
+
+ES6的模块系统是一个文件一个模块。
+模块的暴露用expose.
+```js
+    
+   export const port = 8080;
+   export function startServer(){}
+   export class Config(){};
+
+   import * from "server"
+
+    //默认类，暴露了一个默认的类
+   export default class{}
+    import Server from "server" //Server名字随便取
+```     
+1. 模块单根，无论引用多少次，只是一个对象
+2. 变量，函数只有明确export，才会暴露，否则是模块本身的。
+3. import的时候，js后缀可以省略。
