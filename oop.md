@@ -1474,3 +1474,84 @@ a();
 
 1. 继承Object,function有什么区别。
 2. 深度拷贝和继承Object有什么区别。
+
+如何继承相关属性，并添加一些额外的属性。
+```js
+
+function extend(o,suff){
+   let obj;
+   var F = function(){};
+   F.prototyope = o;
+   F.prototyope.constructor= F;
+   obj = new F();
+   obj.uber = o;
+
+    for(var i in suff){
+        obj[i]=suff[i]
+    }
+    return obj;
+}
+
+var shape ={
+    name:"Shape",
+    toString:function(){
+        return this.name;
+    }
+}
+
+var twoDee = extend(shape,{
+    name:"2D shape",
+    toString:function(){
+        return this.uber.toString()+" "+this.name;
+    }
+})
+
+twoDee.toString();
+                                                                    
+```
+//multiple inhertiance 把属性全部拷贝到一个对象。
+muti and Mixins就是同一个方法
+```js
+function muti(){
+    var n = {},stuff,len = arguments.length;
+    for(var i=0;i<len;i++){
+        stuff = arguments[i];
+        for(j in stuff)
+        if(stuff.hasOwnProperty(j)){
+            n[j] = stuff[j]
+        }
+    }
+    return n;
+}
+var shape = {
+    name:"shape",
+    toString:function(){
+        return this.name;
+    }
+}
+
+var twoDee = {
+    name:"2D shape",
+    dimensions:2
+}
+var triangle = muti(shape,twoDee,{
+    name:"Triangle",
+    getArea:function(){
+        return this.side * this.height/2;
+    },
+    side:5,
+    height:10
+})
+
+triangle.dimensions;
+triangle.toString();
+
+```
+
+继承主要有2类
+1.function,class 类继承。new Child.可以获得所有的Parent方法。
+2.copy object.可以用deepclone或者protptoye及augment.
+   1.deepclone.
+   2.prototype inheritance
+   3.extend and augment 这个最好，即利用2，又可以添加自己的相关属性。
+3.muti inheritance。多重继承。                
