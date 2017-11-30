@@ -1,4 +1,5 @@
 var t = {
-    tabWidth: 4
+                        tabWidth: 24,
+                        bracketSpacing: false
 };
 module.exports = t;
