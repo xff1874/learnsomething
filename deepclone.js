@@ -44,6 +44,8 @@ var a3 = {name: "a3", address: {isLocal: true}};
 var b3 = deep3(a3);
 console.log(b3);
 
+var b4 = 0;
+
 console.log("sdfsdfd");
 
 module.exports = {
