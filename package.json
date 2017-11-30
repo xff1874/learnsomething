@@ -1,49 +1,39 @@
 {
-                        "name": "learnsomething",
-                        "version": "1.0.0",
-                        "description": "learnsomething",
-                        "main": "deepclone.js",
-                        "scripts": {
-                                                "test":
-                                                                        "echo \"Error: no test specified\" && exit 1",
-                                                "build": "webpack",
-                                                "start":
-                                                                        "webpack-dev-server --open",
-                                                "precommit": "lint-staged"
-                        },
-                        "lint-staged": {
-                                                "*.{js,json,css}": [
-                                                                        "prettier --write",
-                                                                        "git add"
-                                                ]
-                        },
-                        "repository": {
-                                                "type": "git",
-                                                "url":
-                                                                        "git+https://github.com/xff1874/learnsomething.git"
-                        },
-                        "author": "",
-                        "license": "ISC",
-                        "bugs": {
-                                                "url":
-                                                                        "https://github.com/xff1874/learnsomething/issues"
-                        },
-                        "homepage":
-                                                "https://github.com/xff1874/learnsomething#readme",
-                        "dependencies": {
-                                                "babel-cli": "^6.26.0",
-                                                "handlebars": "^4.0.11",
-                                                "inject-html-webpack-plugin":
-                                                                        "0.0.31",
-                                                "webpack": "^3.8.1"
-                        },
-                        "devDependencies": {
-                                                "html-loader": "^0.5.1",
-                                                "html-webpack-plugin":
-                                                                        "^2.30.1",
-                                                "husky": "^0.14.3",
-                                                "lint-staged": "^5.0.0",
-                                                "prettier": "1.8.2",
-                                                "webpack-dev-server": "^2.9.5"
-                        }
+    "name": "learnsomething",
+    "version": "1.0.0",
+    "description": "learnsomething",
+    "main": "deepclone.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "webpack",
+        "start": "webpack-dev-server --open",
+        "precommit": "lint-staged"
+    },
+    "lint-staged": {
+        "*.{js,json,css}": ["prettier --write", "git add"]
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/xff1874/learnsomething.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/xff1874/learnsomething/issues"
+    },
+    "homepage": "https://github.com/xff1874/learnsomething#readme",
+    "dependencies": {
+        "babel-cli": "^6.26.0",
+        "handlebars": "^4.0.11",
+        "inject-html-webpack-plugin": "0.0.31",
+        "webpack": "^3.8.1"
+    },
+    "devDependencies": {
+        "html-loader": "^0.5.1",
+        "html-webpack-plugin": "^2.30.1",
+        "husky": "^0.14.3",
+        "lint-staged": "^5.0.0",
+        "prettier": "1.8.2",
+        "webpack-dev-server": "^2.9.5"
+    }
 }
