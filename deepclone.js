@@ -1,59 +1,37 @@
 function isArray(obj) {
-                        return (
-                                                Object.prototype.toString.call(
-                                                                        obj
-                                                ) == "[object Array]"
-                        );
+    return Object.prototype.toString.call(obj) == "[object Array]";
 }
 
 function deepclone(obj) {
-                        if (typeof obj != "object" || obj == null) return obj;
-                        var target = isArray(obj) ? [] : {};
-                        for (var key in obj) {
-                                                if (obj.hasOwnProperty(key)) {
-                                                                        typeof obj[
-                                                                                                key
-                                                                        ] ==
-                                                                        "obj"
-                                                                                                ? clone(
-                                                                                                                          obj[
-                                                                                                                                                  key
-                                                                                                                          ]
-                                                                                                  )
-                                                                                                : (target[
-                                                                                                                          key
-                                                                                                  ] =
-                                                                                                                          obj[
-                                                                                                                                                  key
-                                                                                                                          ]);
-                                                }
-                        }
-                        return target;
+    if (typeof obj != "object" || obj == null) return obj;
+    var target = isArray(obj) ? [] : {};
+    for (var key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            typeof obj[key] == "obj"
+                ? clone(obj[key])
+                : (target[key] = obj[key]);
+        }
+    }
+    return target;
 }
 
 function deep2(obj) {
-                        if (obj == null || typeof obj != "object") return obj;
-                        var temp = new obj.constructor();
-                        for (var key in obj) {
-                                                if (obj.hasOwnProperty(key)) {
-                                                                        temp[
-                                                                                                key
-                                                                        ] = deep2(
-                                                                                                obj[
-                                                                                                                        key
-                                                                                                ]
-                                                                        );
-                                                }
-                        }
-                        return temp;
+    if (obj == null || typeof obj != "object") return obj;
+    var temp = new obj.constructor();
+    for (var key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            temp[key] = deep2(obj[key]);
+        }
+    }
+    return temp;
 }
 
 function deep3(obj) {
-                        return JSON.parse(JSON.stringify(obj));
+    return JSON.parse(JSON.stringify(obj));
 }
 
 var a1 = function() {
-                        console.log("hello a1");
+    console.log("hello a1");
 };
 var b1 = deepclone(a1);
 console.log(b1);
@@ -69,5 +47,5 @@ console.log(b3);
 console.log("sdfsdfd");
 
 module.exports = {
-                        deep2: deep2
+    deep2: deep2
 };
