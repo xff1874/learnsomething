@@ -1588,3 +1588,106 @@ ES6的模块系统是一个文件一个模块。
 1. 模块单根，无论引用多少次，只是一个对象
 2. 变量，函数只有明确export，才会暴露，否则是模块本身的。
 3. import的时候，js后缀可以省略。
+
+
+### chapter 9
+多线程：多cpu或者一个cpu调度现场。
+多线程问题：相互通信。
+有immutable thread?
+异步模型：
+1. 只有一个线程。
+2. 如果有个任务有阻塞，会执行第二个任务。
+
+```js                                                                 
+      function b(){
+          console.log("b")
+      }               
+      function c(){
+          b();
+          console.log("c")
+      }
+
+      function a(n){
+          c();
+      }
+      a();   
+```
+
+1. stack 里面创建第一个frame 包括a及变量
+2. stack 里面创建第二个frame，包括c()
+3. stack 里面创建第三个frame,包括b();
+
+event loop: 一个浏览器tab
+message queue. 所有回调。
+
+setTimeout(fn,timer);
+经过timer将fn添加到message queue.
+
+CPS:上一个的结果是下一个函数的输入参数。
+
+Promise的三种状态，状态互斥
+1. pending. 初始化。
+2. fulfilled. result is ready.
+3. rejected. 错误
+
+then,表示的是promise执行后的状态，包括成功和失败两种。
+
+```js
+function loadImage(url){
+    return new Promise(function(resolve,reject){
+        const image = new Image();
+        image.onload = function(){
+            resolve(image)
+        }
+
+        image.onerror= function(){
+            reject(new Error('Could not load image at ' + url));
+        }
+        image.src = url;
+    })
+}
+loadImage("www.163.com").then(function(){},function(err){
+    console.log(err)
+})
+```
+
+Promise then有时候只有一个fn,因为第一个是resolve.
+catch  == then(undefined,reject).
+chain.
+then. 如果返回一个普通的值，第二个then接受。
+如果返回一个promise-like对象，会等到promise状态变化才返回，也就是会等到异步请求回来。
+```js
+var promise = new Promise(function(resolve,reject){
+    resolve(1)
+})
+
+promise.then(function(val){
+    return val+2;
+}).then(function(val){
+    console.log(val)
+}) //返回3
+```
+
+```js
+
+Promise.resolve("foo").then(function(string){
+    return new Promise(function(resolve,reject){
+        setTimeout(function(){
+            string += "bar";
+            resolve(string)//如果去掉resolve，一直pending。因此也没有结果。
+        },1)
+    }).then(function(string){
+        setTimeout(function(){
+            string += "baz";
+            console.log(string)
+        },1)
+        return string;
+    }).then(function(string){
+         console.log("Last Then:  oops... didn't bother to instantiate and return " +
+                "a promise in the prior then so the sequence may be a bit " +
+                "surprising");
+        console.log(string)
+    })
+})
+```
+虽然第一个用setTimeout调用了异步的一个函数。但是任然等到他结束。而第二个setTimout.最后才执行。
