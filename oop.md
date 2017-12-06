@@ -1691,3 +1691,43 @@ Promise.resolve("foo").then(function(string){
 })
 ```
 虽然第一个用setTimeout调用了异步的一个函数。但是任然等到他结束。而第二个setTimout.最后才执行。
+
+代理作用非常强，可以对属性的访问（set/get）,函数调用做拦截，比自身用set/get，一无侵入。二，可以复用。
+
+```js
+var handler = {
+    get:function(target,name){
+        if(name in target){
+            return target[name]
+        }else
+            return " sorry"
+    },
+    construct: function(target, argumentsList, newTarget) {
+        console.log("cc",target,argumentsList,newTarget)
+    },
+    set:function(obj,prop,value){
+        if(prop == "age"){
+            if(!Number.isInteger(value)){
+                throw new Error("age must be number")
+            }
+        }
+         obj[prop]=value;
+    }
+}
+
+function Person(name){
+    this.name = name;
+}
+var obj = new Proxy(new Person("ttt"),handler);
+
+// var proxy = new Proxy({},handler)
+// proxy.age="100"
+
+// proxy.a = 1;
+// console.log(proxy.a);
+// console.log(proxy.b)
+
+```
+
+//todo:了解一下
+MDN proxy,revocalbe,https://www.w3cplus.com/javascript/use-cases-for-es6-proxies.html的作用
