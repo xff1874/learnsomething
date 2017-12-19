@@ -1730,4 +1730,317 @@ var obj = new Proxy(new Person("ttt"),handler);
 ```
 
 //todo:了解一下
-MDN proxy,revocalbe,https://www.w3cplus.com/javascript/use-cases-for-es6-proxies.html的作用
+1. 拦截和监视外部对象的访问。
+2. 降低函数或者类的复杂度。
+3. 在复杂操作前对操作进行校验或对所需资源进行管理。
+
+```js
+const target = {
+    name:"Billy Bob",
+    age:15
+}
+
+const handler={
+    get(target,key,proxy){
+        const today = new Date();
+        return Reflect.get(target,key,proxy)
+    }
+}
+
+const proxy = new Proxy(target,handler);
+proxy.name;
+```
+
+抽离校验模块
+
+```js
+let numericDataStore={
+    count:0,
+    amount:1234,
+    total:14
+}
+
+var pn = new Proxy(numericDataStore,{
+    set(target,key,value,proxy){
+        if(typeof value !== "number"){
+            throw Error("Properties in numericData must be number")
+        }
+        return Reflect.set(target,key,value,proxy)
+    }
+})
+
+pn.count = "foo"
+```
+验证2 
+
+```js
+function createValidator(target,validator){
+    return new Proxy(target,{
+        _validator:validator,
+        set(target,key,value,proxy){
+            if(target.hasOwnProperty(key)){
+                let validator = this._validator[key];
+                if(!!validator(value)){
+                    return Reflect.set(target,key,value,proxy)
+                }else{
+                    throw Error(`Cannot set ${key} to ${value}.Invalid`)
+                }
+            }else{
+                throw Error(`${key} is not a valid property`)
+            }
+        }
+    })
+}
+
+const personValidator={
+    name(val){
+        return typeof val ==="string"
+    },
+    age(val){
+        return typeof age === "number" && age > 18;
+    }
+}
+
+class Person{
+    constructor(name,age){
+        this.name = name;
+        this.age = age;
+        return createValidator(this,personValidator)
+    }
+}
+
+const bill = new Person("Bill",22);
+
+bill.name = 0;
+bill.age="Bill";
+
+var obj = {
+    name:"zwd",
+    getName(){
+        return this.name;
+    },
+    setName(val){
+        this.name = val;
+    }
+}
+
+obj.getName();
+```
+
+2. 私有属性
+3. 访问日志。
+```js
+let api = {
+    _apiKey:'dsdfsf',
+    getUser(){},
+    getUser(userId){},
+    setUser(userId,config){}
+}
+
+function logMethodAsync(timestamp,method){
+    setTimeout(function(){
+        console.log(`${timestamp} - Loggin ${method} request asynchronously`)
+    },0)
+}
+
+api = new Proxy(api,{
+    get(target,key,proxy){
+        var val = target[key];
+        return function(){
+            var args= arguments
+            logMethodAsync(new Date(),key)
+            return Reflect.apply(val,target,args)
+        }
+    }
+})
+
+api.getUser(2222)
+```
+
+DOM VS BOM
+DOM:document
+BOM:browser and screen
+
+BOM
+navigator: 浏览器. navigator.userAgent
+location: 地址
+history: 历史
+screen:屏幕
+frames: iframe.
+screen 屏幕
+
+```js
+var win = window.open("http://163.com","packet","width=100,height=100,resizable=true")
+```
+DOM: language Independence.
+
+NodeType,nodeName,nodeValue.
+访问节点 XML VS query.
+```js
+document.childNodes[0].attributes[0].nodeName
+vs
+document.getElementsByName("p")[0].nodeName
+```
+创建节点。
+createElement() and createTextNode();
+
+innerHTML vs createElement
+createElment 单个节点
+innerHTML 如果包括多个内容，可以直接创建多个节点。xss.
+cloneNode(true),子节点也拷贝，事件应该不拷贝。
+
+事件传播三阶段
+1. document -> body -> div -> ul -> li -> a
+2. target
+3. a -> li ->ul ... document
+嵌套非常深，因此。addEventListener 设为false最好。
+
+```html
+<p id ="closer">final</p>
+```
+
+```js
+function paraHandler(){
+    alert("clicked paragraph")
+}
+
+var para = document.getElementById("closer");
+para.addEventListener("click",paraHandler,false);
+document.body.addEventListener("click",function(){
+    alert("clicked body")
+},false)
+
+document.addEventListener("click",function(){
+    alert("clicked doc")
+},false)
+
+window.addEventListener("click",function(){
+    alert("clicked window")
+},false)
+```
+用cancellable来判断event是否可以取消。
+
+```js
+function callback(evt){
+    evt = evt||window.evt;
+    var target = evt.target||evt.srcElement;
+}
+
+if(document.addEventListener){
+    document.addEventListener("click",callback,false)
+}else if(document.attachEvent){
+    document.attachEvent("onclick",callback)
+}else{
+    document.onclick = callback;
+}
+```
+XMLHttpRequest
+```js
+var  xhr = new XMLHttpRequest();
+
+xhr.onreadystatechange = function(myxhr){
+    return function(myxhr){
+        mycallback(myxhr)
+    }
+};
+
+xhr.open("GET","url",isAsync)
+xhr.send("parameters")
+
+function myCallback(xhr){
+    if(xhr.readyState < 4){
+        return ;//not ready yet;
+    }
+
+    if(xhr.status !== 200){
+        alert("Error!") //the HTTP status code is not OK
+        return;
+    }
+
+    //all is fine. do the work
+    alert(xhr.responseText);
+}
+```
+```js
+var MYAPP = {};
+MYAPP.namespace = function (name) {
+    var parts = name.split(".");
+    var current = MYAPP;
+    for (var i = 0; i < parts.length; i++) {
+        if (!current[i])
+            current[parts[i]] = {};
+        current = current[parts[i]];
+    }
+}
+
+MYAPP.namespace("event");
+MYAPP.namespace("dom.style")
+```
+
+
+```js
+var observer = {
+    addSubscriber: function (callback) {
+        if (typeof callback === "function") {
+            this.subscribers[this.subscribers.length] = callback;
+        }
+    },
+    removeSubscriber: function (callback) {
+        for (var i = 0; i < this.subscribers.length; i++) {
+            if (this.subscribers[i] === callback) {
+                delete this.subscribers[i];
+            }
+        }
+    },
+    publish: function (what) {
+        for (var i = 0; i < this.subscribers.length; i++) {
+            if (typeof this.subscribers[i] === "function") {
+                this.subscribers[i](what)
+            }
+        }
+    },
+    make: function (o) {
+        //turn an object into a publisher
+        for (var i in this) {
+            if (this.hasOwnProperty(i)) {
+                o[i] = this[i];
+                o.subscribers = [];
+            }
+        }
+    }
+}
+
+var blogger = {
+    writeBlogPost: function () {
+        var content = "Today is " + new Date();
+        this.publish(content);
+    }
+}
+
+var la_times = {
+    newIssue: function () {
+        var paper = "Martians has landed on Earth";
+        this.publish(paper)
+    }
+}
+
+observer.make(blogger);
+observer.make(la_times)
+
+var jack = {
+    read: function (what) {
+        console.log("I just read that " + what);
+    }
+}
+
+var jill = {
+    gossip: function (what) {
+        console.log("You didnit' hear it from me, but " + what)
+    }
+}
+
+blogger.addSubscriber(jack.read);
+blogger.addSubscriber(jill.gossip);
+blogger.writeBlogPost();
+
+```
