@@ -74,6 +74,20 @@ quantifier. always work with the smallest immediately-preceding subexpress.
 
 The oroder in which certain metacharacters are checked can be very important.
 
+^[-+]?[0-9]*(\.[0-9]*)?$
+(^[-+]?[0-9]*(\.[0-9]*)?.)([cf])$ group从做到右。
+?: group but not catpture.(?:https)和group一期使用，放在前面。
+\s,any white space. tab,space,newline,carriage.
+modifers: /igm
+\t tab
+\n newline
+\r return
+\s any white character. tab,newline,space,formfeed
+\S [^\s]
+\w [0-9a-zA-Z_]
+\W [^\w]
+\d [0-9]
+\D [^\d]
 
 ## Question
 1. word boundaries
