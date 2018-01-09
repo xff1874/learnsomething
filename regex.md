@@ -89,9 +89,30 @@ modifers: /igm
 \d [0-9]
 \D [^\d]
 
+^From: (\S)+ \(([^()]*)\)
+匹配 From: elvis@tabloid.org (The King)
+
+lookaround和位置有关？
+lookahead (?=) 主要是判断子regex的位置，从左往右，有括号
+lookbehind （?<=） 从右往左，有括号
+(?=Jeffery)Jeff 匹配 By Jeffrey Fridl 不匹配 Tom Jeffeson
+\bJeff(?=s\b),只是检查Jeff后面是否有s,不作为最终匹配的一部分。
+(?=s\b)(?<=\bJfeff)。()()表示also.第一个子表达式匹配s然后在前面。第二个(?<=\bJeff)表示先匹配\bJeff，然后找到位置从右往左能找到这个匹配，在f后面。
+
+?<! successful if can not match to left
+?!  successful if can not math to right
+ a word boundary is a position with \w on one side and not on the other
+ (?<!\w)(?=\w) as a start-of-word
+ (?<=\w)(?!\w) as an end-of-word boundary.
+ lookaround assertions
+ (?=regex) followed by the regex. hello(?=lo) hello
+ (?<=regex) preceded by the regex.
+(?<=\d)(?=(\d\d\d)+) 匹配了234，345.
+
 ## Question
-1. word boundaries
 3. "nail the x \"x4\" plank" 如果"不加\会如何
 4. \$[0-9]*(\.[0-9][0-9])? 匹配$.49 为毛说没用
 5. this <I>short</I> example,只匹配<.*>
+
+
 
