@@ -109,10 +109,29 @@ lookbehind （?<=） 从右往左，有括号
  (?<=regex) preceded by the regex.
 (?<=\d)(?=(\d\d\d)+) 匹配了234，345.
 
+Unicode, start with U+,eg. U+000A
+lazy quantifiers: \w+?.最少匹配。
+
+DFA VS NFA
+两种engine.
+
+#### two rules
+
+1. The match that begin earliest(leftmost) Wins
+从左边第一个字符前面开始匹配，如果没找到移到第二个字符前面。重复。
+2. The Standard Quantifiers are greedy.
+quantifiers(*,?,+,{min,max})are greedy.
+[^Subject: (.*).*] 因为是greedy,第一个.*会把所有的都匹配了。第二个.*没用。
+The only time they settle  for anything less than their maximum is when matching too much
+ends causing some later part of the regex to fail.只有当后面的匹配失败的时候，greedy才会减少。
+First come, First server原则。
+^.*([0-9]+) 匹配 Copyright 2003 $1为3.^.*匹配Copyright 200
 ## Question
 3. "nail the x \"x4\" plank" 如果"不加\会如何
 4. \$[0-9]*(\.[0-9][0-9])? 匹配$.49 为毛说没用
 5. this <I>short</I> example,只匹配<.*>
+
+
 
 
 
