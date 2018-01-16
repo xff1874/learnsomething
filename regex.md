@@ -126,6 +126,26 @@ The only time they settle  for anything less than their maximum is when matching
 ends causing some later part of the regex to fail.只有当后面的匹配失败的时候，greedy才会减少。
 First come, First server原则。
 ^.*([0-9]+) 匹配 Copyright 2003 $1为3.^.*匹配Copyright 200
+
+NFA VS DFA
+NFA:regex-directed.用正则匹配文本。
+DFA:text-directed.用文本匹配正则。
+
+Two important Points to Backtracking
+1. when facing multiple choice, which choice should be tried first?
+2. when face to backtrack, which saved choice should be used.
+
+a. In a situations where the decision is between "make an attempt" and "skip an attempt",as with items governed by quantifiers,the engine always choose to first make the attempt for greedy quantifiers, and to first skip the attempt
+for lazy(no-greedy) ones.
+b. The most recently saved options is the one returned to when a local failure forces backtracking.LIFO(last in first out)
+
+<B>((?!<B>).)*?<\/B> 匹配<B>xxxx<B>ttt</B>
+
+atomic group?
+possessive quantifiers
+
+
+
 ## Question
 3. "nail the x \"x4\" plank" 如果"不加\会如何
 4. \$[0-9]*(\.[0-9][0-9])? 匹配$.49 为毛说没用
