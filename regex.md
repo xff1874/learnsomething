@@ -141,8 +141,15 @@ b. The most recently saved options is the one returned to when a local failure f
 
 <B>((?!<B>).)*?<\/B> 匹配<B>xxxx<B>ttt</B>
 
-atomic group?
-possessive quantifiers
+atomic group?有点像only
+an aomic group is group that, when the regex engine exits from it, automatically throws away all backtracking
+positions remembered by any tokens inside the group.(?>group)
+possessive quantifiers?
+?+,*+,++,{m,n}+ 有点（?>group）only的意思。throw away backtracking.
+
+DFA VS NFA
+1. DFA text.longtest match
+2. NFA regex. backtracking. non-lazy
 
 
 
