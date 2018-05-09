@@ -60,4 +60,8 @@ public class ListLexer extends  Lexer {
         while(c == ' ' || c == '\t' || c == '\n' || c == '\r')consume();
     }
 
+    @Override
+    public String getTokenName(int tokenType) {
+        return tokenNames[tokenType];
+    }
 }

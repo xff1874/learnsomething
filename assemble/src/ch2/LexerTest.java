@@ -1,6 +1,6 @@
 package ch2;
 
-public class Test {
+public class LexerTest {
 
     public static void main(String[] args) {
         ListLexer lexer = new ListLexer("[a,b]");

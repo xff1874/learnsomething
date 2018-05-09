@@ -25,4 +25,7 @@ public abstract  class Lexer {
         if(c == x) consume();
         else throw new Error("expecting" + x +" found "+ c);
     }
+
+    public abstract Token nextToken();
+    public abstract String getTokenName(int tokenType);
 }

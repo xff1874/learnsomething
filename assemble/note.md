@@ -28,3 +28,12 @@ NAME:represents the identifier category.
 COMMA,LBRACK,RBRACK.
 
 ## LL(1) Recursive-Descent Parser
+Analyze the syntactic structure of the token sequence
+
+### computing Lookahead Sets
+lookahead set is the set of tokens that can begin a particaluar alternative.
+1. FIRST
+2. FOLLOW
+alternative
+
+
