@@ -27,5 +27,5 @@ public abstract  class Lexer {
     }
 
     public abstract Token nextToken();
-    public abstract String getTokenName(int tokenType);
+    public abstract String getTokenName(int x);
 }
