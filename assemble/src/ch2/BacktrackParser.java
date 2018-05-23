@@ -1,9 +1,14 @@
 package ch2;
 
 
-
+import java.util.HashMap;
+import java.util.Map;
 
 public class BacktrackParser extends  Parser {
+
+    Map<Integer,Integer> list_memo = new HashMap<Integer,Integer>();
+
+
 
     public BacktrackParser(Lexer lexer){
         super(lexer);
@@ -13,10 +18,27 @@ public class BacktrackParser extends  Parser {
     /**
      * list: '[' elements ']' //match bracketed list
      */
-    public void list(){
+    public void _list(){
         match(BacktrackLexer.LBRACK);
         elements();
         match(BacktrackLexer.RBRACk);
+    }
+
+    public void list(){
+        boolean failed = false;
+        int startTokenIndex = index(); //get current token position;
+        if(isSpeculating() && alreadyParsedRule(list_memo))return;
+        //must not have previously parsed list at token parse it
+        try{_list();}
+        catch(Exception e){
+            failed = true;
+            throw e;
+        }
+        finally {
+            //succeed or fail, must record result if backtracking.
+            if(isSpeculating())
+                memoize(list_memo,startTokenIndex,failed);
+        }
     }
 
     /**
@@ -107,5 +129,9 @@ public class BacktrackParser extends  Parser {
         }
         release();
         return success;
+    }
+
+    public void clearMemo(){
+        list_memo.clear();
     }
 }

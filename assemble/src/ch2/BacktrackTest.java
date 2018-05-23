@@ -13,7 +13,7 @@ public class BacktrackTest {
 
     public static void main(String[] args) {
 
-        String input = "[a,b,c]=[d,e,f]";
+        String input = "[a,b]=[c,d]";
         BacktrackLexer lexer = new BacktrackLexer(input);
         BacktrackParser parser = new BacktrackParser(lexer);
         parser.stat();
