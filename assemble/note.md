@@ -215,3 +215,62 @@ zero->unknow.
 greater indicate success and positon.
 
 
+### Bulding Intermediate Form Trees
+
+In this part of the book, we're going to
+explore the patterns that help us analyze input phrases.
+
+#### Syntax-directed application
+
+they can generate output as soon as they recognize a construct.
+
+#### AST
+abstract syntax tree.
+ASTs hold the key tokens from the input stream and record grammatical relationships discovered during the parse.
+
+#### Quest
+
+1. Why we build trees in the first place
+
+2. How we should structure ASTs and why
+
+3. How to implement ASTs in an object-oriented language
+
+4. How to enforce tree structure with an implementation language's static type system.
+
+5. How to construct ASTs with ANTLR's AST operators and rewrite rules.
+
+#### Four most common IR tree patterns
+
+1. Parse Tree. parse trees record how a parser recongnizes an input sentence.
+The interiro nodes are rule names, and the leaves are tokens. Although parse trees are
+less suitable than ASTs for most language applications, parsers can create them automatically.
+
+2.Homogenous AST. The most important thing about a tree is __its shape__, not its node data type. Unless we're writing a lot of code by hand, we can get away with a few or even
+just one node data type. If all the nodes have the same type, we say that they are homogeneous. With a single node type, there can be no specialty fields to reference child subtrees. Nodes track children with lists of child pointers.
+
+3. Normalized Heterogeneous AST. Trees with a multitude of node types are code heterogeneous trees. Normalized heterogeneous trees use a normalized list of children like homogeneous trees.
+
+4. Ireregular Heterogeneous AST. when we are refer to an AST as heterogeneous, we also assume that the nodes have ireregular children. Instead of a normalized child list, the nodes have names fields, one per child.
+
+#### Parse Tree
+用树表示输入然后校验语法正确。
+
+
+#### AST
+
+1. No unnecessary nodes
+2. Easy to walk
+3. emphasize operators,operands and the relationsip between them rather than artifacts from the grammar.
+
+The key idea: operators or opeartions become subtree roots. All other tokens become operands
+
+Order
+
+The higher precedence appear lower in the AST.
+
+
+
+
+
+
