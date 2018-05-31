@@ -220,6 +220,8 @@ greater indicate success and positon.
 In this part of the book, we're going to
 explore the patterns that help us analyze input phrases.
 
+word track occurance.
+
 #### Syntax-directed application
 
 they can generate output as soon as they recognize a construct.
@@ -268,6 +270,8 @@ The key idea: operators or opeartions become subtree roots. All other tokens bec
 Order
 
 The higher precedence appear lower in the AST.
+
+### Parse Tree
 
 
 
