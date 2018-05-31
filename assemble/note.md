@@ -273,6 +273,33 @@ The higher precedence appear lower in the AST.
 
 ### Parse Tree
 
+### Homogenenous AST
+A homogeneous tree implments an abstract syntax tree(AST) using a single node data type and a normalized child list represetntation.
+operator vs operand.
+```java
+public class AST{
+    Token token;
+    List<AST> children;
+}
+```
+
+### Normalized Heterogenous AST
+More than a single Node data type but with a normalized child list representation.
+```java
+public abstract class ExprNode extends AST;
+public class IntNode extends ExprNode;
+public class AddNode extend ExprNode;
+```
+
+### Irregular Heterogenous AST.
+Instead of a uniform list of children,
+each node data type has specifi(named) child fields.
+```java
+    public class AddNode extends ExprNode{
+        ExprNode left,right;
+    }
+```
+
 
 
 
