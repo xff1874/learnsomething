@@ -300,6 +300,35 @@ each node data type has specifi(named) child fields.
     }
 ```
 
+### Walking and Rewriting Trees
+
+#### Four key-walking patterns
+1. Embeded Heterogeneous Tree Walker.
+    executea appropriate actions and walk any children.
+
+2. External Tree Visitor.
+    Encapsulate tree walking code into a single class definition.
+    It allows us to alter tree-walking behaviour without altering AST node definitions.
+
+3. Tree Grammer.
+    rely on node token types rahter than node types.
+
+4. Treee Pattern Matcher.
+    focus on subtrees. decouple the order in which we apply tree patterns
+    from the tree patterns themselves.
+
+#### traversal.
+
+1. Preorder traversal. visit a parent node before visiting its children.
+2. Inorder traversal. visit a node in between visiting children.
+3. Postorder traversal. visit a node after its children.
+
+Tree walker is different from action order.
+
+
+
+
+
 
 
 
