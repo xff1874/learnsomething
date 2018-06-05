@@ -304,7 +304,7 @@ each node data type has specifi(named) child fields.
 
 #### Four key-walking patterns
 1. Embeded Heterogeneous Tree Walker.
-    executea appropriate actions and walk any children.
+    execute appropriate actions and walk any children.
 
 2. External Tree Visitor.
     Encapsulate tree walking code into a single class definition.
@@ -324,6 +324,160 @@ each node data type has specifi(named) child fields.
 3. Postorder traversal. visit a node after its children.
 
 Tree walker is different from action order.
+
+#### Embedded Heterogeneous Tree Walker
+```java
+    class NodeName extends commonRoot{
+        public void walking-method-name(){
+            preoder-action-for-this-node-or-subtree;
+            walk-any-children;
+        }
+    }
+
+```
+
+```java
+    public class HeteroAST{
+        Token token;
+        public HeteroAST(){}
+        public HeteroAST(Token token){this.token = token;}
+        public String toString(){returtn token.toString()}
+
+    }
+
+```
+
+```java
+    public abstract class VecMathNode extends HeteroAST{
+        public VecMathNode()
+        public VecMathNode(Token token)
+        public void print(){
+            System.out.print(token !=null?token.toString:"<null></null>")
+        }
+    }
+```
+
+```java
+    public class AssignNode extends StatNode{
+        VarNode id;
+        ExprNode value;
+        public void print(){
+            id.print();//walk left child
+            System.out.print("=");
+            value.print();//walk right child
+            System.out.println();
+        }
+    }
+```
+
+#### External Tree Visitor
+
+Visitors combine tree walking and action execution code outside the
+AST node definition. Consequently, we can change the functionality of
+the tree walker without having to change the AST class definitions and
+can even switch visitors on the fly.
+
+Implementation
+"double dispatch"
+visit();
+
+```java
+    public abstract class VecMathNode extends HeteroAST{
+        public abstract void visit(VecMathVisitor visitor);
+    }
+```
+
+```java
+   public void visit(VecMathVisitor visitor){
+       visitor.visit(this)
+   }
+```
+
+n->AddNode
+n.visitor(myVisitor) ->myVisitor.visit((AddNode)n);
+
+```java
+    public interface VecMathVisitor{
+        void visit(AssignNode n);
+        void visit(PrintNode n);
+    }
+
+    public class PrintVisitor implements VecMathVisitor{
+        public void visit(AssignNode n){
+            n.id.visit(this);
+            System.out.println("=");
+            n.value.visit(this);
+            System.out.println();
+        }
+    }
+```
+
+Switching on the Token type BUild Independent Visitors.
+
+```java
+public void print(VecMathNode n){
+    switch(n.token.type){
+        case Token.ID:  print((VarNode)n);break;
+        case Token.ASSIGN: (print (AssignNode)n)break;
+    }
+}
+
+public void print(VarNode n){
+    print(n.left);
+    System.out.println("var");
+    print(n.right);
+}
+```
+
+#### Tree Grammar
+```antlr
+    tree grammar Printer; //this grammar is a tree grammar called Printer
+    options{
+        tokenVocab = VecMath; //use token vocabulary from VecMath.g
+        ASTLabelType = CommonTree; //use homogeneous CommonTree for $ID.etc
+    }
+    @memebers{void print(String s)}{System.out.print(s)}
+```
+
+```printer.g
+    prog: stat+; //match list of statement
+    //match tree like ("=" x 1) and ('print' ('+' 3 4))
+    stat: ^('='ID {print($ID.text+"=";)}expr){print ("\n")}
+        | ^('print' {print("print ");}expr){print("\n")}
+    expr: ^('+' expr {print("+");}expr)
+        | INT {print($INT.text)}
+```
+
+#### Tree Pattern Matcher.
+
+1. We have to specify patterns only for the subtrees we care about.
+2. we dont' need to direct the tree walk.
+
+4 * [0,5*0,3] -> [4*0,4*5,4*3] ->[0,0,4*3]
+
+```java
+^('*' INT ^(VEC .+)) // * at root with 2nd child as vector
+scalarVectorMult : ^('*' INT ^(VEC (e+=.)+)) -> ^(VEC ^('*' INT $e)+)
+zeroX:^('*' a=INT b=INT {$a.int == 0}?) ->$a; //0 * x -> 0;
+
+```
+
+Optimizations
+
+```java
+ x+x -> 2 * x;
+ 2 * x -> x << 1; //left shift.
+ x<<n<<m -> x <<(n+m)
+```
+
+### Tracking and Identifying Program Symbol
+
+
+
+
+
+
+
 
 
 
