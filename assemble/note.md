@@ -472,6 +472,58 @@ Optimizations
 
 ### Tracking and Identifying Program Symbol
 
+#### Symbol Table
+
+Symbol table is created and maintained by compilers in order to store information about the occurence of various entities such as variable names, function names, objects, classes, interfaces,etc.
+
+1. Symbol Table for Monolithic Scope
+    all symbols exist within a single scope.
+2. Symbol Table for Nested Scopes.
+    multiple scope and scopes can nest inside other scope.
+
+Three key properties
+1. Name
+2. Category: class, method, variable,label.
+3. type: x+y. Dynamcially typed languages like Python track type infor mation at run-time. Statically typed languages like C++ and JAVA track type information at compile time.
+
+As we encounter a new scope, we push it on the scope stack.
+The top of the stack is called the current scope. As we exit a scope,
+we pop it off the stack, revealing the previous scope as the current scope.
+
+scope tree like a collection of stacks.
+
+resolve: look up symbol-name in the scope's dictionary.upward to the root.
+```java
+    public Symbol resovle(String name){
+        Symbol s = members.get(name); //look in this scope
+        if( s != null) return s; //return it if in this scope;
+        if(enclosingScope !=null){ //have an enclosing scope.
+            return enclosingScope.resolve(name)
+        }
+        return null;
+    }
+```
+
+#### Symbol Table for monolithic scope
+1. push global scope
+2. def x in the current scope.
+3. ref x string int the current scope.
+4. pop global scope.
+
+
+#### Symbol Table for Nested Scopes.
+1. Push a GlobalScope.def BuiltInType object for int,float,void
+2. ref x's type. def x in the current scope.
+method return f's turen type. def f int the current scope and push it
+as the current scope.
+{} push a localScope as the new current scope.
+End of method pop the methodSymbol Scope.
+ref x .ref x starting in the current scope. If not found. look in the immediately enclosing scope.
+end of file. pop the globalScope.
+
+
+
+
 
 
 
