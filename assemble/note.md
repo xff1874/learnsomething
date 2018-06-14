@@ -522,6 +522,139 @@ ref x .ref x starting in the current scope. If not found. look in the immediatel
 end of file. pop the globalScope.
 
 
+### Managing Symbol Tables for Data Aggregates.
+
+Data aggregate scope.
+code outside of a data aggregate scope can access the members inside
+using an expression such as user.name.
+
+```c
+// start of global scope
+    struct A{
+        int x;
+        struct B{int y;}
+        B b;
+        struct C{int z;}
+        C c;
+    }
+    A a;
+
+    void f(){
+        struct D{
+            int i;
+        }
+        D d;
+        d.i = a.b.y;
+    }
+```
+
+one for looking up isolated symobl like d
+and another for resolving memeber access expressions like d.i;
+
+```java
+    class A{
+        public: int x;
+        void foo(){};
+    }
+
+    class B: public A{
+        int y;
+        void foo(){
+            int z = x+y;
+        }
+    }
+```
+
+Deal with forwar References
+
+```java
+    class A{
+        void foo(){x = 3;}
+        int x;
+    }
+```
+two-pass approach.
+1. a definition pass would define A,foo,x;
+2. a reference pass would scan the input again.
+
+```java
+    int main(){
+        x=y; //shouldn't see global x or local y;
+        int y;
+    }
+    int x;
+```
+If a sumbol refernce resolves to a local or global symbol,
+the reference's token index must come after the defnition's token index;
+
+#### Symbol Table for Data Aggregates
+Use this pattern if you need to support data aggregates like C structs or
+Pascal records or SQL tables.
+
+|start of file | push a GlobalScope.def BuiltInType Objects for int, float,void
+|Variable declaration x| ref x's type def x as a variableSymbol Object int the current scope.
+                        This works for globals, struct fields,parameters, and locals.
+| struct declaration S | def S as a StructSymbol object in the current scope and push it as the current scope.
+| Method declartation f | ref f's return type. def f as a MethodSymbol object in the current scope and push it as
+                        the current scope.
+|    {}                 | push a LocalScope as the new current scope. pop, revealing the previous scope as the current                           scope. This works for structs,methods and local scope.
+| Variable reference x  | refer x starting in the current scope. If not found, look in the immediately enclosing scope if any
+| Member access expr.x | Compute the type of expr using the previous rule and this one recusivley. Ref x only in that
+                        type's scope, not in any enclosing scopes.
+| End of line           | pop the GlobalScope.
+
+Class hierarchy for a symbol table managing classes.
+
+
+
+#### Symbol Table for Classes.
+
+uset this pattern to build OOP language.
+
+two-pass approach.
+
+1. define symbol in the first pass.
+2. resolve symbol reference in the second pass.
+
+issue: data communication. pass definition to resolution phase.
+
+1. The definition phase tracks the current scope as usual and records it
+in the associated AST nodes. For example,
+a{ node records the associated LocalScope. As we define symbols, we might as well record the
+resulting Symbol objects in the AST too.
+2. The resolution phase can then look in the tree for scope information and symbol definitions. As we resolve symobl references, we'll alos shove that into the AST. any future tree phases would most likely use the symbol pointers for analysis or translation.
+
+#### process
+
+start of file | push a globalScope.def BuiltInType objects for int,float,void
+
+Identifier references x | set x's scope field to the current scope(the resolution phase needs it)
+
+Variable declaration x | def x as a VariableSymbol object,sym. in the current scope. This works for globals,class fields, parameters.and locals. Set sym.def to x's ID AST node.
+set that ID node's symbol to sym. Set the scope field of x's type AST node to the current scope.
+
+Class declartation C | def C as a ClassSymbol object, sym, in the currrent scope and push it as the current scope. Set sym.def to the class name's ID AST node. Set that ID node's symbol to sym. set the scope field of C's superclass' AST node to the current scope.
+
+Method declaration f | def f as MethodSymbol object, sym. in the current scope and push it as the current scope. Set sym.def to the function name's ID AST node. Set that ID node's symbol to sym. Set the scope field of f's return type AST node to the current scope.
+
+{} push a Local Scope as the new current scope. pop .revealing previous scope as current scope
+End of file | pop the GlobalScope.
+
+7.8 Definition phase rules for building a scope tree for classes and populating it with symbols.
+
+Variable declaration x | Let t be the ID node for x's type. ref t, yielding sym. set t.symbol to sym. Set x.symbol.type to sym; in other words, jump to VariableSymbol for x via the AST node's symbol field and then set its type field to sym.
+
+Class declaration C . Let t be the ID node for C's superclass. ref t.yielding sym. Set t.symbol to sym.Set C's superclass field sym.
+
+Method declaration f . Let be the ID node for f's return type. ref t, yielding sym. Set t.symbol to sym. Set the type field ot the MethodSymbol for f to sym.
+Variable reference x. ref x, yielding sym. Set x.symbol to sym.
+
+this.  Resolve to surrouding class scope. Set the symbol field of this's ID node to surroudding class scope.
+Member access expr.x| Resolve expr to a praticular type sysmtem.esym, using these rules. ref
+x within esym's scope, yielding sym. Set x.symbol(x's ID node) to sym.
+
+
+
 
 
 
