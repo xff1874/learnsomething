@@ -663,6 +663,27 @@ x within esym's scope, yielding sym. Set x.symbol(x's ID node) to sym.
 看不懂，先放弃
 
 
+### chapter 9 Interpreter
+
+Three things to consider when building an interpreter
+1. how to store data
+2. how and when to track symbols
+3. how to execute instructions
+
+
+#### Store Data
+
+1. one Global memory
+2. multiple function spaces. Each function call creates a new space to hold parameters and local variables. The interpreter push them into stack.
+3. multiple Data aggregate instances.
+
+
+Syntax Directed Interpreter | this pattern works best for small languages that are really just lists of instructions or declarations. It's not super-efficient but has the fewest components to build.
+
+Tree-Based Interpreter
+
+    This pattern executes programs by constructing an AST from the source code and walking the code.
+
 
 
 
