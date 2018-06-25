@@ -653,6 +653,14 @@ this.  Resolve to surrouding class scope. Set the symbol field of this's ID node
 Member access expr.x| Resolve expr to a praticular type sysmtem.esym, using these rules. ref
 x within esym's scope, yielding sym. Set x.symbol(x's ID node) to sym.
 
+## chapter 8
+
+1. Computing Static Expression Types | This pattern is a component of any type safety checker such as Pattern,Enforcing Static Type Safety
+2. Automatic Type Promotion  |Automatically promoting types is also really just a component of type checker. If your language doesn't support automatic promotion (like ML). you don't need this pattern.
+3. Enforcing Static Type Safety | You'll need this pattern if you're paring a non-object-oriented programming language such as C.
+4. Enforcing Polymorphic Type Safety | Use this pattern if you're dealing with an object-oriented language such as C++ or java.
+
+看不懂，先放弃
 
 
 
