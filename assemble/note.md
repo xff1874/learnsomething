@@ -684,6 +684,24 @@ Tree-Based Interpreter
 
     This pattern executes programs by constructing an AST from the source code and walking the code.
 
+### Chapter 10
+
+Translation involves fully understatnding each input phrase, picking an appropriate output construct, and filling it with elements from the input model.
+
+1. Syntax-Directed Translator.
+2. Rule-Based Translator.  use DSL
+3. Model-driven translation. an internal representation of the input.
+
+
+Rule-Based Translation
+
+map: input -> output. ASF+SDF.
+
+Model-Driven Translation
+
+create an AST input model and then walks it to generate output with print statemetns.
+
+
 
 
 
